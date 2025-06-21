@@ -17,7 +17,7 @@ class Build():
         option = st.radio(
             "### Organize:",
             ("By Distance(Most likely)", "By Distance(Closest Possible)",
-              "By Year", "By Magnitude", "By Diameter", "By Rarity")
+              "By Year", "By Brightness", "By Diameter", "By Rarity")
         )
 
         if option == 'By Distance(Most likely)':
@@ -26,7 +26,7 @@ class Build():
             chart = st.pyplot(self.plt.by_distance_close(self.kind))
         elif option == 'By Year':
             chart = st.pyplot(self.plt.by_year(self.kind))
-        elif option == 'By Magnitude':
+        elif option == 'By Brightness':
             chart = st.pyplot(self.plt.by_magnitude(self.kind))
         elif option == 'By Diameter':
             chart = st.pyplot(self.plt.by_diameter(self.kind))
