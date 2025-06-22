@@ -73,3 +73,6 @@ class Read_data():
         df["Rarity Group"] = pd.cut(df["Rarity"], bins=rarity_bin, labels=self.rarity_label, right=False)
 
         return df
+    
+    def future_data(self):
+        pass

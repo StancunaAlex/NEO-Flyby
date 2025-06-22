@@ -50,4 +50,15 @@ class Build():
         elif sb == 'Pie':
             self.kind = 'pie'
 
+        # sb_time = st.sidebar.selectbox(
+        #     'Choose the timeline:',
+        #     ('Past', 'Future')
+        # )
+
+        # if sb_time == 'Past':
+        #     pass
+        # elif sb_time == 'Future':
+        #     pass
+        
+
 start = Build()
