@@ -5,7 +5,6 @@ import numpy as np
 class Create_plot():
     def __init__(self):
         self.read = Read_data()
-        self.df = self.read.load_data()
         self.size = (16, 12)
         self.title_size = 30
         self.fontsize = 18
@@ -28,57 +27,56 @@ class Create_plot():
         fig.suptitle(title, fontsize=self.title_size)
         fig.tight_layout()
         return fig
-
-    def by_distance(self, kind):
-        self.counts = self.df['Distance Group'].value_counts().reindex(self.read.distnace_label[::-1])
-        labels = self.read.distnace_label[::-1]
-
-        name_x = 'Distance'
-        title = "Estimated Flyby Distance of the NEO"
-
-        return self.create_chart(kind, name_x, title, labels)
     
-    def by_distance_close(self, kind):
-        self.counts = self.df['Distance Group Close'].value_counts().reindex(self.read.distnace_label[::-1])
-        labels = self.read.distnace_label[::-1]
+    def sort(self, kind, past, sort_type):
+        self.df = self.read.load_data(past)
 
-        name_x = 'Distance'
-        title = "Minimum Possible Flyby Distance of the NEO"
+        if sort_type == 'Distance Group':
 
-        return self.create_chart(kind, name_x, title, labels)
-    
-    def by_year(self, kind):
-        self.counts = self.df['Year Group'].value_counts().sort_index()
-        labels = self.read.year_label
+            self.counts = self.df[sort_type].value_counts().reindex(self.read.distnace_label[::-1])
+            labels = self.read.distnace_label[::-1]
 
-        name_x = 'Year Group'
-        title = "Year of NEO Flyby"
-        
-        return self.create_chart(kind, name_x, title, labels)
-    
-    def by_magnitude(self, kind):
-        self.counts = self.df['Magnitude'].value_counts().reindex(self.read.magnitude_label[::-1])
-        labels = self.read.magnitude_label[::-1]
+            name_x = 'Distance'
+            title = "Estimated Flyby Distance of the NEO"
 
-        name_x = 'Brightness'
-        title = "Estimated Brightness (H Magnitude) of the NEO"
+        elif sort_type == 'Distance Group Close':
 
-        return self.create_chart(kind, name_x, title, labels)
+            self.counts = self.df[sort_type].value_counts().reindex(self.read.distnace_label[::-1])
+            labels = self.read.distnace_label[::-1]
 
-    def by_diameter(self, kind):
-        self.counts = self.df['Diameter Group'].value_counts().sort_index()
-        labels = self.read.diameter_labels
+            name_x = 'Distance'
+            title = "Minimum Possible Flyby Distance of the NEO"
 
-        name_x = 'Diameter'
-        title = "Estimated Diameter of the NEO"
+        elif sort_type == 'Year Group':
 
-        return self.create_chart(kind, name_x, title, labels)
+            self.counts = self.df[sort_type].value_counts().reindex(self.read.year_label)
+            labels = self.read.year_label
 
-    def by_rarity(self, kind):
-        self.counts = self.df['Rarity Group'].value_counts().sort_index()
-        labels = self.read.rarity_label
+            name_x = 'Year Group'
+            title = "Year of NEO Flyby"
 
-        name_x = 'Rarity'
-        title = "Rarity Score of the NEO"
+        elif sort_type == 'Magnitude':
+
+            self.counts = self.df[sort_type].value_counts().reindex(self.read.magnitude_label[::-1])
+            labels = self.read.magnitude_label[::-1]
+
+            name_x = 'Brightness'
+            title = "Estimated Brightness (H Magnitude) of the NEO"
+
+        elif sort_type == 'Diameter Group':
+
+            self.counts = self.df[sort_type].value_counts().sort_index()
+            labels = self.read.diameter_labels
+
+            name_x = 'Diameter'
+            title = "Estimated Diameter of the NEO"
+
+        elif sort_type == 'Rarity Group':
+
+            self.counts = self.df[sort_type].value_counts().sort_index()
+            labels = self.read.rarity_label
+
+            name_x = 'Rarity'
+            title = "Rarity Score of the NEO"
 
         return self.create_chart(kind, name_x, title, labels)

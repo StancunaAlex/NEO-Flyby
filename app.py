@@ -15,23 +15,29 @@ class Build():
         """)
 
         option = st.radio(
-            "### Organize:",
-            ("By Distance(Most likely)", "By Distance(Closest Possible)",
-              "By Year", "By Brightness", "By Diameter", "By Rarity")
+            "### Group or sort by:",
+            ("Estimated Distance (Most Likely)", "Estimated Distance (Closest Possible)",
+            "Year of Approach", "Apparent Brightness","Estimated Diameter", "Rarity Score")
         )
 
-        if option == 'By Distance(Most likely)':
-            chart = st.pyplot(self.plt.by_distance(self.kind))
-        elif option == 'By Distance(Closest Possible)':
-            chart = st.pyplot(self.plt.by_distance_close(self.kind))
-        elif option == 'By Year':
-            chart = st.pyplot(self.plt.by_year(self.kind))
-        elif option == 'By Brightness':
-            chart = st.pyplot(self.plt.by_magnitude(self.kind))
-        elif option == 'By Diameter':
-            chart = st.pyplot(self.plt.by_diameter(self.kind))
-        elif option == 'By Rarity':
-            chart = st.pyplot(self.plt.by_rarity(self.kind))
+        if option == 'Estimated Distance (Most Likely)':
+            self.sort_type = 'Distance Group'
+            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
+        elif option == 'Estimated Distance (Closest Possible)':
+            self.sort_type = 'Distance Group Close'
+            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
+        elif option == 'Year of Approach':
+            self.sort_type = 'Year Group'
+            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
+        elif option == 'Apparent Brightness':
+            self.sort_type = 'Magnitude'
+            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
+        elif option == 'Estimated Diameter':
+            self.sort_type = 'Diameter Group'
+            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
+        elif option == 'Rarity Score':
+            self.sort_type = 'Rarity Group'
+            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
 
     def side_panel(self):
         sb = st.sidebar.selectbox(
@@ -50,15 +56,15 @@ class Build():
         elif sb == 'Pie':
             self.kind = 'pie'
 
-        # sb_time = st.sidebar.selectbox(
-        #     'Choose the timeline:',
-        #     ('Past', 'Future')
-        # )
+        sb_time = st.sidebar.selectbox(
+            'Select time range',
+            ('Historical Data', 'Predicted Data')
+        )
 
-        # if sb_time == 'Past':
-        #     pass
-        # elif sb_time == 'Future':
-        #     pass
+        if sb_time == 'Historical Data':
+            self.past = True
+        else:
+            self.past = False
         
 
 start = Build()
