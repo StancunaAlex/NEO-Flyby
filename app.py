@@ -17,27 +17,21 @@ class Build():
         option = st.radio(
             "### Group or sort by:",
             ("Estimated Distance (Most Likely)", "Estimated Distance (Closest Possible)",
-            "Year of Approach", "Apparent Brightness","Estimated Diameter", "Rarity Score")
+            "Year of Approach", "Apparent Brightness","Estimated Diameter", 'Estimated Velocity (km/s)', "Rarity Score")
         )
 
-        if option == 'Estimated Distance (Most Likely)':
-            self.sort_type = 'Distance Group'
-            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
-        elif option == 'Estimated Distance (Closest Possible)':
-            self.sort_type = 'Distance Group Close'
-            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
-        elif option == 'Year of Approach':
-            self.sort_type = 'Year Group'
-            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
-        elif option == 'Apparent Brightness':
-            self.sort_type = 'Magnitude'
-            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
-        elif option == 'Estimated Diameter':
-            self.sort_type = 'Diameter Group'
-            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
-        elif option == 'Rarity Score':
-            self.sort_type = 'Rarity Group'
-            chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
+        option_sort = {
+            'Estimated Distance (Most Likely)': 'Distance Group',
+            'Estimated Distance (Closest Possible)': 'Distance Group Close',
+            'Year of Approach': 'Year Group',
+            'Apparent Brightness': 'Magnitude',
+            'Estimated Diameter': 'Diameter Group',
+            'Estimated Velocity (km/s)': 'Velocity Group',
+            'Rarity Score': 'Rarity Group'
+        }
+
+        self.sort_type = option_sort[option]
+        chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
 
     def side_panel(self):
         sb = st.sidebar.selectbox(
@@ -45,16 +39,15 @@ class Build():
             ('Line', 'Bar', 'Barh', 'Area', 'Pie')
         )
 
-        if sb == 'Line':
-            self.kind = 'line'
-        elif sb == 'Bar':
-            self.kind = 'bar'
-        elif sb == 'Barh':
-            self.kind = 'barh'
-        elif sb == 'Area':
-            self.kind = 'area'
-        elif sb == 'Pie':
-            self.kind = 'pie'
+        sb_sort = {
+            'Line': 'line',
+            'Bar': 'bar',
+            'Barh': 'barh',
+            'Area': 'area',
+            'Pie': 'pie'
+        }
+
+        self.kind = sb_sort[sb]
 
         sb_time = st.sidebar.selectbox(
             'Select time range',

@@ -52,14 +52,15 @@ class Read_data():
         
         df['Magnitude'] = pd.cut(df['H(mag)'], bins=magnitude_bin, labels=self.magnitude_label, right=False)
 
-        diameter_bin = np.array([0, 10, 25, 140, 300, 1000, float('inf')])
+        diameter_bin = np.array([0, 10, 25, 140, 300, 1000, 10000, float('inf')])
         self.diameter_labels = [
     "Tiny (<10 m)",
     "Very Small (10–25 m)",
     "Small (25–140 m)",
     "Medium (140–300 m)",
     "Large (300–1000 m)",
-    "Massive (>1 km)"
+    "Massive (1-10 km)",
+    'Extinction Event (>10 km)'
 ]
 
         df['Diameter'] = (
@@ -77,5 +78,18 @@ class Read_data():
         self.rarity_label = ["Very Common", "Common", "Uncommon", "Rare", "Very Rare", "Extremely Rare"]
         
         df["Rarity Group"] = pd.cut(df["Rarity"], bins=rarity_bin, labels=self.rarity_label, right=False)
+
+        velocity_bin = np.array([0, 5, 10, 15, 20, 30, 40, float('inf')])
+        self.velocity_labels = [
+            'Crawling (0-5 km/s)',
+            'Slow Approach (5-10 km/s)',
+            'Moderate Speed (10-15 km/s)',
+            'Typical NEO Speed (15-20 km/s)',
+            'Fast Mover (20-30 km/s)',
+            'Hypervelocity (30-40 km/s)',
+            'Extreme Velocity (>40 km/s)'
+        ]
+
+        df['Velocity Group'] = pd.cut(df['V relative(km/s)'], bins=velocity_bin, labels=self.velocity_labels, right=False)
 
         return df
