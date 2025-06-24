@@ -17,7 +17,8 @@ class Build():
         option = st.radio(
             "### Group or sort by:",
             ("Estimated Distance (Most Likely)", "Estimated Distance (Closest Possible)",
-            "Year of Approach", "Apparent Brightness","Estimated Diameter", 'Estimated Velocity (km/s)', "Rarity Score")
+            "Year of Approach", "Apparent Brightness","Estimated Diameter", 'Estimated Velocity (km/s)', "Rarity Score",
+            'Concern Score')
         )
 
         option_sort = {
@@ -27,7 +28,8 @@ class Build():
             'Apparent Brightness': 'Magnitude',
             'Estimated Diameter': 'Diameter Group',
             'Estimated Velocity (km/s)': 'Velocity Group',
-            'Rarity Score': 'Rarity Group'
+            'Rarity Score': 'Rarity Group',
+            'Concern Score': 'Score Group'
         }
 
         self.sort_type = option_sort[option]
@@ -36,14 +38,12 @@ class Build():
     def side_panel(self):
         sb = st.sidebar.selectbox(
             'Choose the type of plot you would like:',
-            ('Line', 'Bar', 'Barh', 'Area', 'Pie')
+            ('Bar', 'Barh', 'Pie')
         )
 
         sb_sort = {
-            'Line': 'line',
             'Bar': 'bar',
             'Barh': 'barh',
-            'Area': 'area',
             'Pie': 'pie'
         }
 
