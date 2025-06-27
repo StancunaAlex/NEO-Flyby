@@ -17,7 +17,7 @@ class Read_data():
         else:
             self.df = pd.read_csv(self.future_csv_path)
 
-            year_bin = np.arange(2020, 2200, 10)
+            year_bin = np.arange(2020, 2201, 10)
             self.year_label = [f"{start}-{start+10}" for start in year_bin[:-1]]
 
         self.df.pop('V infinity(km/s)')

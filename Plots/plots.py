@@ -8,20 +8,22 @@ class Create_plot():
         self.size = (16, 12)
         self.title_size = 34
         self.fontsize = 22
+
+    def percent_filter(pct):
+        return f'{pct:.0f}%' if pct >= 1 else ''
     
-    def create_chart(self, kind, name_x, title, labels):
+    def create_chart(self, kind, name_x, title, labels, explode):
 
         fig, ax = plt.subplots(figsize=self.size)
         data_ax1 = self.counts
         data_ax2 = labels
 
-        ax.set_xlabel(name_x, fontsize=self.fontsize)
-        ax.set_ylabel('Number of NEOs', fontsize=self.fontsize)
-
-        legend = [f'{label} - {count}'
-            for label, count in zip(labels, self.counts)
-            ]
-        ax.legend(legend, title='Number of NEOs', fontsize=14, loc='upper right')
+        colors = [
+        '#0288D1', '#FF7043', '#388E3C', '#7B1FA2',
+        '#FFA000', '#00796B', '#D32F2F', '#303F9F',
+        '#F4511E', '#2E7D32', '#1976D2', '#8E24AA',
+        '#F9A825', '#455A64'
+    ]
 
         fig.suptitle(title, fontsize=self.title_size)
         fig.tight_layout()
@@ -36,76 +38,99 @@ class Create_plot():
                           for label, count in zip(labels, self.counts)
                           ]
             
-            ax.pie(self.counts, startangle=90, counterclock=False, normalize=True)
-            ax.legend(percentage, fontsize=14, loc='upper left')
+            ax.pie(self.counts, startangle=90, counterclock=False, normalize=True,
+                    autopct=percent_filter, pctdistance=1.08, colors=colors,
+                    explode=explode, shadow=True)
+            ax.legend(percentage, fontsize=9, loc='upper left')
             fig.suptitle(title, fontsize=self.title_size)
         elif kind == 'barh':
             barh = ax.barh(data_ax2, data_ax1)
             ax.bar_label(barh, fmt='%.0f')
-        elif kind == 'bar':
+
+            ax.set_ylabel(name_x, fontsize=self.fontsize)
+            ax.set_xlabel('Number of NEOs', fontsize=self.fontsize)
+        else:
             barh = ax.bar(data_ax2, data_ax1)
             ax.bar_label(barh, fmt='%.0f')
+
+            ax.set_xlabel(name_x, fontsize=self.fontsize)
+            ax.set_ylabel('Number of NEOs', fontsize=self.fontsize)
 
         return fig
     
     def sort(self, kind, past, sort_type):
         self.df = self.read.load_data(past)
 
+
         sort_dict = {
             'Distance Group': {
                 'count': self.df[sort_type].value_counts().reindex(self.read.distnace_label[::-1]),
                 'label': self.read.distnace_label[::-1],
                 'name': 'Distance',
-                'title': 'Estimated Flyby Distance of the NEO'
+                'title': 'Estimated Flyby Distance of the NEO',
+                'explode': (0, 0.1, 0, 0, 0, 0)
             },
             'Distance Group Close': {
                 'count': self.df[sort_type].value_counts().reindex(self.read.distnace_label[::-1]),
                 'label': self.read.distnace_label[::-1],
                 'name': 'Distance',
-                'title': 'Minimum Possible Flyby Distance of the NEO'
+                'title': 'Minimum Possible Flyby Distance of the NEO',
+                'explode': (0, 0.1, 0, 0, 0, 0)
             },
             'Year Group': {
                 'count': self.df[sort_type].value_counts().reindex(self.read.year_label),
                 'label': self.read.year_label,
                 'name': 'Year Group',
-                'title': 'Year of NEO Flyby'
+                'title': 'Year of NEO Flyby',
+                'explode': (0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             },
             'Magnitude': {
                 'count': self.df[sort_type].value_counts().reindex(self.read.magnitude_label[::-1]),
                 'label': self.read.magnitude_label[::-1],
                 'name': 'Brightness',
-                'title': 'Estimated Brightness (H Magnitude) of the NEO'
+                'title': 'Estimated Brightness (H Magnitude) of the NEO',
+                'explode': (0, 0, 0.1, 0, 0, 0)
             },
             'Diameter Group': {
                 'count': self.df[sort_type].value_counts().sort_index(),
                 'label': self.read.diameter_labels,
                 'name': 'Diameter',
-                'title': 'Estimated Diameter of the NEO'
+                'title': 'Estimated Diameter of the NEO',
+                'explode': (0, 0.1, 0, 0, 0, 0, 0)
             },
             'Velocity Group': {
                 'count': self.df[sort_type].value_counts().sort_index(),
                 'label': self.read.velocity_labels,
                 'name': 'Velocity',
-                'title': 'Relative Velocity of the NEO'
+                'title': 'Relative Velocity of the NEO',
+                'explode': (0, 0.1, 0, 0, 0, 0, 0)
             },
             'Rarity Group': {
                 'count': self.df[sort_type].value_counts().sort_index(),
                 'label': self.read.rarity_label,
                 'name': 'Rarity',
-                'title': 'Rarity Score of the NEO'
+                'title': 'Rarity Score of the NEO',
+                'explode': (0, 0.1, 0, 0, 0, 0)
             },
             'Score Group': {
                 'count': self.df[sort_type].value_counts().sort_index(),
                 'label': self.read.score_label,
                 'name': 'Concern',
-                'title': 'Concern Score of the NEO'
+                'title': 'Concern Score of the NEO',
+                'explode': (0, 0.1, 0, 0, 0)
             }
         }
+        
+        if past == True:
+            sort_dict['Year Group']['explode'] = (0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
         self.counts = sort_dict[sort_type]['count']
         labels = sort_dict[sort_type]['label']
-
+        explode_count = sort_dict[sort_type]['explode']
         name_x = sort_dict[sort_type]['name']
         title = sort_dict[sort_type]['title']
 
-        return self.create_chart(kind, name_x, title, labels)
+        return self.create_chart(kind, name_x, title, labels, explode_count)
+    
+def percent_filter(pct):
+    return f'{pct:.1f}%' if pct >= 1 else ''
