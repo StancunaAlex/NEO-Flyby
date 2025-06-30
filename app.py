@@ -19,11 +19,22 @@ class Build():
 
     def main_panel(self):
         st.title('NEO Flyby')
-        st.markdown(self.text.app_description)
 
-        col1, col2, col3 = st.columns([1, 2, 1])
+        col1, col2 = st.columns([1.5, 1.5])
 
         with col2:
+            st.subheader("Summary Statistics")
+
+            with st.expander('Information on Statistics and Charts'):
+                st.markdown(self.text.summary_description)
+
+            st.info(self.text.summary_info)
+            
+            self.df.load_data(self.past, self.all_data)
+            st.dataframe(self.df.summary_stats(), use_container_width=True)
+
+        with col1:
+            st.markdown(self.text.app_description)
             with st.expander('Information on NEOs'):
                 st.markdown(self.text.info)
 
@@ -44,10 +55,10 @@ class Build():
             with st.spinner(self.text.random_loading):
                 time.sleep(self.plt.rand)
                 st.info(sort_description)
-                chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type))
+                chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type, self.all_data))
 
         st.caption(self.text.df_info)
-        st.dataframe(self.df.dataframe(), use_container_width=True, height=100)
+        st.dataframe(self.df.dataframe(), use_container_width=True, height=300)
 
         st.caption("Created by Alex | [GitHub](https://github.com/StancunaAlex) | [LinkedIn](https://www.linkedin.com/in/alex-stancuna/) | Powered by NASA")
 
@@ -81,7 +92,12 @@ class Build():
 
         if 'Historical Data' in sb_time:
             self.past = True
-        else:
+            self.all_data = False
+        elif 'Predicted Data' in sb_time:
+            self.past = False
+            self.all_data = False
+        elif 'All Data' in sb_time:
+            self.all_data = True
             self.past = False
         
 start = Build()

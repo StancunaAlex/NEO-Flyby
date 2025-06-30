@@ -2,7 +2,7 @@ import random
 
 class Description:
     def __init__(self):
-        self.app_description = "### Analyze and visualize historical and predicted near-Earth object flybys."
+        self.app_description = "### Visualize historical and predicted near-Earth object flybys."
 
         self.info = """
         ### What is a Near-Earth Object (NEO)?
@@ -23,7 +23,7 @@ class Description:
 
 ### Types of NEOs
 
-- Most NEOs and PHOs are **asteroids**.
+- Most NEOs and PHOs (Potentially hazardous objects) are **asteroids**.
 - A very small number (about **0.3%**) are **comets**.
 """
 
@@ -35,35 +35,38 @@ class Description:
           Note that the file format is csv.**"""
 
         self.random_loading = random.choice(loading_text)
+
+        self.summary_info = 'Note that the data used to create the table is based on the time range selected.'
+
+        self.summary_description = """
+
+"""
         
     def main_text(self, sort_type):
         self.text_sort = {
             'Distance Group':{
                 'text': """""",
                 'sort description': (
-        "Groups NEOs based on their most probable distance from Earth during close approach."
-        "This reflects the best estimate of how near each object will come."
+        "Groups NEOs based on their most probable distance from Earth during close approach. "
     )
             },
             'Distance Group Close': {
                 'text': """""",
                 'sort description': (
-        "Groups NEOs according to the closest possible distance they could approach Earth, "
-        "accounting for uncertainties in their orbits. Represents the minimum potential distance."
+        "Groups NEOs according to the closest possible distance they could approach Earth. "
+
     )
             },
             'Year Group': {
                 'text': """""",
                 'sort description': (
-        "Groups NEOs by the year in which they make their close approach to Earth, "
-        "allowing visualization of flybys over time. For simplicity, the years are grouped into 10-year intervals."
+        "Groups NEOs by the year in which they make their close approach to Earth. "
     )
             },
             'Magnitude': {
                 'text': """""",
                 'sort description': (
         "Groups NEOs based on their apparent brightness (magnitude) as seen from Earth. "
-        "Lower magnitudes mean brighter objects."
     )
             },
             'Diameter Group': {
@@ -88,7 +91,6 @@ class Description:
                 'text': """""",
                 'sort description': (
         "Groups NEOs by a risk assessment score representing the potential hazard level they pose to Earth."
-        " Note that a NEO with a 100% chance of impacting Earth will always score higher than a much larger NEO with virtually no chance of collision."
     )
             }
         }

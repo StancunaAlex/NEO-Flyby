@@ -8,19 +8,26 @@ class Read_data():
         self.past_csv_path = os.path.join(data_dir, 'NEO_close.csv')
         self.future_csv_path = os.path.join(data_dir, 'NEO_close_future.csv')
 
-        self.load_data(past = True)
+        self.load_data(past = True, all_data = False)
 
-    def load_data(self, past):
-        if past == True:
+    def load_data(self, past, all_data):
+        if past == True and all_data == False:
             self.df = pd.read_csv(self.past_csv_path)
 
             year_bin = np.arange(1890, 2031, 10)
-            self.year_label = [f"{start}-{start+10}" for start in year_bin[:-1]]
-        else:
+        elif past == False and all_data == False:
             self.df = pd.read_csv(self.future_csv_path)
 
             year_bin = np.arange(2020, 2201, 10)
-            self.year_label = [f"{start}-{start+10}" for start in year_bin[:-1]]
+        elif past == False and all_data == True:
+            df1 = pd.read_csv(self.past_csv_path)
+            df2 = pd.read_csv(self.future_csv_path)
+
+            self.df = pd.concat([df1, df2], ignore_index=True)
+
+            year_bin = np.arange(1890, 2201, 10)
+        
+        self.year_label = [f"{start}-{start+10}" for start in year_bin[:-1]]
 
         self.df.pop('V infinity(km/s)')
 
@@ -40,7 +47,7 @@ class Read_data():
 
         self.df["Year"] = pd.to_numeric(self.df['Close-Approach (CA) Date'].str[:4])
 
-        self.df['Year Group'] = pd.cut(self.df['Year'], bins=year_bin, labels=self.year_label, right=False)
+        self.df['Year Group'] = pd.cut(self.df['Year'], bins=year_bin, labels=self.year_label, right=True)
 
         magnitude_bin = np.array([0, 14, 17, 22, 25, 30, float('inf')])
         self.magnitude_label = [
@@ -140,25 +147,45 @@ class Read_data():
             'Extinction Event'
             ]
 
-        self.df['Score Group'] = pd.cut(self.df['Total Score'], bins=score_bin, labels=self.score_label, right=False) 
+        self.df['Score Group'] = pd.cut(self.df['Total Score'], bins=score_bin, labels=self.score_label, right=False)
 
+        self.dataframe()
         self.count()
         return self.df
     
     def count(self):
-        self.group_type = ['Distance Group', 'Distance Group Close', 'Year Group',
-                           'Magnitude', 'Diameter Group', 'Velocity Group',
-                           'Rarity Group', 'Score Group']
+        self.group_type = ['CA DistanceNominal (LD)', 'CA DistanceMinimum (LD)', 'Year',
+                           'H(mag)', 'Diameter', 'V relative(km/s)',
+                           'Rarity', 'Total Score']
         
         self.label_count = {}
 
-        for label in self.group_type:
-            self.label_count[label] = self.df[label].value_counts()
+        self.summary_stats()
+        return self.summary_df
 
+    def summary_stats(self):
+        for label in self.group_type:
+            self.label_count[label] = self.df[label].sum()
+
+        self.min_val = {label: np.min(self.df[label]) for label in self.group_type}
+        self.max_val = {label: np.max(self.df[label]) for label in self.group_type}
+        self.averg_val = {label: np.nanmean(pd.to_numeric(self.df[label])) for label in self.group_type}
+        self.median_val = {label: np.median(pd.to_numeric(self.df[label]).dropna()) for label in self.group_type}
+
+        d = {
+            'Minimum Value': [self.min_val[label] for label in self.group_type],
+            'Mean Value': [self.averg_val[label] for label in self.group_type],
+            'Max Value': [self.max_val[label] for label in self.group_type],
+            'Median Value': [self.median_val[label] for label in self.group_type]
+            }
+
+        self.summary_df = pd.DataFrame(data=d, index=['Distance (LD)', 'Closest Distance (LD)', 'Year', 'Magnitude', 'Diameter (m)',
+                                                      'Velocity (km/s)', 'Rarity', 'Score'])
+
+        return self.summary_df
+    
     def dataframe(self):
         return self.df
-
-#         print(self.label_count['Score Group']['Moderate Concern'])
-
+    
 # start = Read_data()
-# startt = start.load_data(past=False)
+# startt = start.load_data(past=False, all_data=False)

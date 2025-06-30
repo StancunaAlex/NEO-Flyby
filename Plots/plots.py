@@ -14,7 +14,7 @@ class Create_plot():
     def percent_filter(pct):
         return f'{pct:.0f}%' if pct >= 1 else ''
     
-    def create_chart(self, kind, name_x, title, labels, explode):
+    def create_chart(self, kind, name_x, title, labels, explode, sort_type):
 
         fig, ax = plt.subplots(figsize=self.size)
         data_ax1 = self.counts
@@ -57,12 +57,13 @@ class Create_plot():
 
             ax.set_xlabel(name_x, fontsize=self.fontsize)
             ax.set_ylabel('Number of NEOs', fontsize=self.fontsize)
+            if sort_type == 'Year Group':
+                plt.xticks(rotation=90)
 
         return fig
     
-    def sort(self, kind, past, sort_type):
-        self.df = self.read.load_data(past)
-
+    def sort(self, kind, past, sort_type, all_data):
+        self.df = self.read.load_data(past, all_data)
 
         sort_dict = {
             'Distance Group': {
@@ -123,8 +124,11 @@ class Create_plot():
             }
         }
         
-        if past == True:
+        if past == True and all_data == False:
             sort_dict['Year Group']['explode'] = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0)
+        elif past == False and all_data == True:
+            sort_dict['Year Group']['explode'] = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0,
+             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,)
 
         self.counts = sort_dict[sort_type]['count']
         labels = sort_dict[sort_type]['label']
@@ -132,7 +136,7 @@ class Create_plot():
         name_x = sort_dict[sort_type]['name']
         title = sort_dict[sort_type]['title']
 
-        return self.create_chart(kind, name_x, title, labels, explode_count)
+        return self.create_chart(kind, name_x, title, labels, explode_count, sort_type)
     
 def percent_filter(pct):
     return f'{pct:.1f}%' if pct >= 1 else ''
