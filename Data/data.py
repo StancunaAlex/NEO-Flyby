@@ -8,6 +8,8 @@ class Read_data():
         self.past_csv_path = os.path.join(data_dir, 'NEO_close.csv')
         self.future_csv_path = os.path.join(data_dir, 'NEO_close_future.csv')
 
+        self.load_data(past = True)
+
     def load_data(self, past):
         if past == True:
             self.df = pd.read_csv(self.past_csv_path)
@@ -152,6 +154,9 @@ class Read_data():
 
         for label in self.group_type:
             self.label_count[label] = self.df[label].value_counts()
+
+    def dataframe(self):
+        return self.df
 
 #         print(self.label_count['Score Group']['Moderate Concern'])
 

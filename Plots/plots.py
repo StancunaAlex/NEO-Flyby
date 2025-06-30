@@ -6,8 +6,10 @@ class Create_plot():
     def __init__(self):
         self.read = Read_data()
         self.size = (16, 12)
-        self.title_size = 34
+        self.title_size = 30
         self.fontsize = 22
+
+        self.rand = np.random.uniform(0.3, 0.8)
 
     def percent_filter(pct):
         return f'{pct:.0f}%' if pct >= 1 else ''
@@ -82,7 +84,7 @@ class Create_plot():
                 'label': self.read.year_label,
                 'name': 'Year Group',
                 'title': 'Year of NEO Flyby',
-                'explode': (0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                'explode': (0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             },
             'Magnitude': {
                 'count': self.df[sort_type].value_counts().reindex(self.read.magnitude_label[::-1]),
@@ -122,7 +124,7 @@ class Create_plot():
         }
         
         if past == True:
-            sort_dict['Year Group']['explode'] = (0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+            sort_dict['Year Group']['explode'] = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0)
 
         self.counts = sort_dict[sort_type]['count']
         labels = sort_dict[sort_type]['label']

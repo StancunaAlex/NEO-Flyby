@@ -1,6 +1,10 @@
+import random
+
 class Description:
     def __init__(self):
-        self.right_description = """
+        self.app_description = "### Analyze and visualize historical and predicted near-Earth object flybys."
+
+        self.info = """
         ### What is a Near-Earth Object (NEO)?
 
 - A **Near-Earth Object (NEO)** is a small object in space that orbits the Sun.
@@ -11,9 +15,7 @@ class Description:
 
 - The definition depends on the object’s **orbit around the Sun**, not where it is right now.
 - This means an NEO might be far from Earth at the moment but still considered an NEO because its orbit brings it close to Earth at some point.
-"""
 
-        self.left_description = """
   ### What Makes an NEO Potentially Hazardous?
 
 - If an NEO’s orbit **crosses Earth’s orbit** and it is **larger than 140 meters (about 460 feet)** across, it is called a **Potentially Hazardous Object (PHO)**.
@@ -23,8 +25,16 @@ class Description:
 
 - Most NEOs and PHOs are **asteroids**.
 - A very small number (about **0.3%**) are **comets**.
+"""
 
-        """
+        loading_text = ('Crunching space rocks...', 'Calculating asteroid trajectory...', 'Gathering satellite data...',
+                        'Observing the sky...', 'Verifying planet positions...', 'Scanning for potential threats...',
+                        'Negotiating with aliens...')
+        
+        self.df_info = """**This is the full formatted dataframe used for the plotting. To see or download the unformatted dataframe, visit NASA's official website.
+          Note that the file format is csv.**"""
+
+        self.random_loading = random.choice(loading_text)
         
     def main_text(self, sort_type):
         self.text_sort = {
