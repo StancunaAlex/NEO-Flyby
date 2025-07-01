@@ -16,3 +16,7 @@ This project analyzes **Near-Earth Objects (NEOs)**, tracking their size, distan
 - **Matplotlib** for visualizations
 - **NumPy** for numerical operations
 - **Git/GitHub** for version control
+
+##How It Works
+- Upon launching the app, users can select past or future NEO data and view categorized data, including visualizations for different metrics like distance and velocity.
+- Users can interact with the data by selecting different categories and observing how NEOs are classified and scored based on potential impact risk.
