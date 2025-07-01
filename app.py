@@ -57,6 +57,8 @@ class Build():
                 st.info(sort_description)
                 chart = st.pyplot(self.plt.sort(self.kind, self.past, self.sort_type, self.all_data))
 
+        st.markdown(self.text.top_neos)
+
         st.caption(self.text.df_info)
         st.dataframe(self.df.dataframe(), use_container_width=True, height=300)
 

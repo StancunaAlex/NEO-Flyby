@@ -72,16 +72,44 @@ class Read_data():
     'Extinction Level Size (>10 km)'
 ]
 
-        self.df['Diameter'] = (
-            self.df['Diameter']
-            .str.replace('km', '000 m', regex=False)
-            .str.extractall(r'(\d+\.?\d*)')
-            .unstack()
-            .astype(float)
-            .mean(axis=1)
-        )
+        # Look into fixing the parsing. Current version doesn't handle decimals well
+        def parse_diameter(diam_str):
+            if pd.isna(diam_str):
+                return np.nan
+            
+            diam_str = diam_str.replace(" ", "")
+            
+            if "±" in diam_str:
+                diam_str = diam_str.split("±")[0]
+            
+            if "–" in diam_str:
+                parts = diam_str.split("–")
+            elif "-" in diam_str:
+                parts = diam_str.split("-")
+            else:
+                parts = [diam_str]
+            
+            numbers = []
+            for part in parts:
+                part = part.replace("km", "").replace("m", "")
+                try:
+                    numbers.append(float(part))
+                except:
+                    continue
+            
+            if not numbers:
+                return np.nan
+            
+            avg_val = np.mean(numbers)
+            
+            if 'km' in diam_str:
+                avg_val *= 1000
+            
+            return avg_val
+        
+        self.df['Average Diameter'] = self.df['Diameter'].apply(parse_diameter)
 
-        self.df['Diameter Group'] = pd.cut(self.df['Diameter'], bins=diameter_bin, labels=self.diameter_labels, right=False)
+        self.df['Diameter Group'] = pd.cut(self.df['Average Diameter'], bins=diameter_bin, labels=self.diameter_labels, right=False)
 
         rarity_bin = np.array([0, 1, 2, 3, 4, 5, float('inf')])
         self.rarity_label = ["Very Common", "Common", "Uncommon", "Rare", "Very Rare", "Extremely Rare"]
@@ -155,7 +183,7 @@ class Read_data():
     
     def count(self):
         self.group_type = ['CA DistanceNominal (LD)', 'CA DistanceMinimum (LD)', 'Year',
-                           'H(mag)', 'Diameter', 'V relative(km/s)',
+                           'H(mag)', 'Average Diameter', 'V relative(km/s)',
                            'Rarity', 'Total Score']
         
         self.label_count = {}
@@ -179,8 +207,8 @@ class Read_data():
             'Median Value': [self.median_val[label] for label in self.group_type]
             }
 
-        self.summary_df = pd.DataFrame(data=d, index=['Distance (LD)', 'Closest Distance (LD)', 'Year', 'Magnitude', 'Diameter (m)',
-                                                      'Velocity (km/s)', 'Rarity', 'Score'])
+        self.summary_df = pd.DataFrame(data=d, index=['Distance (LD)', 'Closest Distance (LD)', 'Year', 'Magnitude (H)', 'Diameter (m)',
+                                                      'Velocity (km/s)', 'Rarity', 'Concern Score'])
 
         return self.summary_df
     
